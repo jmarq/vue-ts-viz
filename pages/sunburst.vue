@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button @click="increaseFirstChild">+1</button>
+    <p>click on a segment to increase its value</p>
     <svg width="100%" height="100vh" viewBox="0 0 1000 1000">
       <g transform="translate(500, 500)">
         <path
@@ -11,7 +11,7 @@
           stroke="black"
           @click="
             () => {
-              increaseNode(node)
+              increaseNode(node);
             }
           "
         />
@@ -21,48 +21,60 @@
 </template>
 
 <script lang="ts">
-import { arc } from 'd3-shape'
-import { hierarchy, partition, HierarchyRectangularNode } from 'd3-hierarchy'
-import { schemeCategory10 } from 'd3-scale-chromatic'
-import { color as d3Color } from 'd3-color'
+import { arc } from 'd3-shape';
+import { hierarchy, partition, HierarchyRectangularNode } from 'd3-hierarchy';
+import { schemeCategory10 } from 'd3-scale-chromatic';
+import { color as d3Color } from 'd3-color';
 
-export interface ColoredHierarchyNode extends HierarchyRectangularNode<any> {
-  color?: string
+export interface SunburstNode {
+  // color?: string
+  children?: SunburstNode[];
+  value: number;
+  name?: string;
 }
+export interface ColoredHierarchyNode
+  extends HierarchyRectangularNode<SunburstNode> {
+  color?: string;
+}
+
 // console.log(d3)
 // const arc = d3.arc
-const sunburstArcGenerator = arc<HierarchyRectangularNode<any>>()
+const sunburstArcGenerator = arc<ColoredHierarchyNode>()
   .startAngle((d) => d.x0)
   .endAngle((d) => d.x1)
   .innerRadius((d) => d.y0)
-  .outerRadius((d) => d.y1)
+  .outerRadius((d) => d.y1);
 
-const colors = schemeCategory10
+const colors = schemeCategory10;
 
 export default {
   data() {
     return {
       sunburstData: {
         name: 'root',
+        value: 0,
         children: [
           {
             value: 2,
           },
           {
             name: 'child1',
+            value: 0,
             children: [
               { name: 'gc1', value: 1 },
               {
                 name: 'gc2',
+                value: 0,
                 children: [
                   { value: 2 },
-                  { children: [{ value: 1 }, { value: 1 }] },
+                  { value: 0, children: [{ value: 1 }, { value: 1 }] },
                 ],
               },
             ],
           },
           {
             name: 'child2',
+            value: 0,
             children: [
               { name: 'gc3', value: 2 },
               { name: 'gc4', value: 1 },
@@ -70,71 +82,49 @@ export default {
           },
         ],
       },
-    }
+    };
   },
   computed: {
     root() {
-      console.log('computing root')
-      const hierarchyRootUnPartitioned = hierarchy(this.sunburstData)
-      hierarchyRootUnPartitioned.sum((d) => d.value)
-      const hierarchyRoot: ColoredHierarchyNode = partition().size([
-        2 * Math.PI,
-        500,
-      ])(hierarchyRootUnPartitioned)
-      console.log(hierarchyRoot.descendants())
+      console.log('computing root');
+      const hierarchyRootUnPartitioned = hierarchy<SunburstNode>(
+        this.sunburstData as SunburstNode
+      );
+      hierarchyRootUnPartitioned.sum((d) => d.value || 0);
+      const hierarchyRoot: ColoredHierarchyNode = partition<SunburstNode>().size(
+        [2 * Math.PI, 500]
+      )(hierarchyRootUnPartitioned);
       if (colors) {
         hierarchyRoot.children &&
           hierarchyRoot.children.forEach((node, i) => {
-            console.log(node)
-            node.color = colors[i]
-          })
-        hierarchyRoot.color = 'white'
+            node.color = colors[i];
+          });
+        hierarchyRoot.color = 'white';
       }
-      return hierarchyRoot
+      return hierarchyRoot;
     },
   },
   methods: {
     sunburstArcGenerator,
     nodeColor(node: ColoredHierarchyNode): string {
       if (node.color) {
-        return node.color || 'black'
+        return node.color;
       } else if (node.parent) {
-        return (
-          '' +
-          d3Color(this.nodeColor(node.parent) || 'black').brighter(
-            0.25 * node.depth
-          )
-        )
-      } else {
-        return 'black'
-      }
-    },
-    increaseFirstChild() {
-      console.log('increasing')
-      if (
-        this.sunburstData &&
-        this.sunburstData.children &&
-        this.sunburstData.children.length > 0 &&
-        this.sunburstData.children[0].value
-      )
-        this.sunburstData.children[0].value += 3
-    },
-    increaseNode(node: HierarchyRectangularNode<any>) {
-      // this is flawed because it increments the computed node, not the source data.
-      // seems like it'd need to be able to hook into a specific child in sunburstData by id/path or something
-      // No! actually you can get to the underlying data using node.data, which is still observed by Vue, it seems.
-      console.log('increasing node?')
-      console.log(node)
-      if (!node.data.children) {
-        if (node.data.value) {
-          node.data.value += 1
+        const parentColor = d3Color(this.nodeColor(node.parent));
+        if (parentColor) {
+          return '' + parentColor.brighter(0.25 * node.depth);
         } else {
-          node.data.value = 1
+          return 'black';
         }
+      } else {
+        return 'black';
       }
+    },
+    increaseNode(node: ColoredHierarchyNode) {
+      node.data.value += 1;
     },
   },
-}
+};
 </script>
 
 <style scoped>
