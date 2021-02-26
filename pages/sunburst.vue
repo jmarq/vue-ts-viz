@@ -1,6 +1,9 @@
 <template>
   <div>
-    <p class="instruction">click on a segment to increase its value</p>
+    <p class="instruction">
+      Sunburst and Icicle charts based on shared data. Click on a segment to
+      increase its value in the underlying dataset.
+    </p>
     <svg width="45%" height="99vh" viewBox="0 0 1000 1000">
       <g transform="translate(500, 500)">
         <path
@@ -120,6 +123,7 @@ export default {
         [1, 1]
       )(hierarchyRootUnPartitioned);
 
+      // colorize first level of children, so their descendents can inherit the hue.
       hierarchyRoot.children &&
         hierarchyRoot.children.forEach((node, i) => {
           node.color = colors[i];
@@ -136,7 +140,7 @@ export default {
       } else if (node.parent) {
         const parentColor = d3Color(this.nodeColor(node.parent));
         if (parentColor) {
-          return '' + parentColor.brighter(0.25 * node.depth);
+          return '' + parentColor.brighter(0.3 * node.depth);
         } else {
           return 'black';
         }
@@ -157,6 +161,7 @@ export default {
 <style scoped>
 svg {
   border: 0px solid #444 inset;
+  user-select: none;
 }
 g {
   fill: black;
@@ -166,10 +171,13 @@ rect {
   transition: 175ms linear;
 }
 path:hover,
-rect:hover,
+rect:hover {
+  stroke: cornflowerblue;
+  fill: #444;
+}
+
 .selected {
   fill: #444;
-  stroke: cornflowerblue;
 }
 
 .instruction {
