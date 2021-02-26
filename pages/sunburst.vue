@@ -1,17 +1,42 @@
 <template>
   <div>
-    <p>click on a segment to increase its value</p>
-    <svg width="100%" height="100vh" viewBox="0 0 1000 1000">
+    <p class="instruction">click on a segment to increase its value</p>
+    <svg width="45%" height="99vh" viewBox="0 0 1000 1000">
       <g transform="translate(500, 500)">
         <path
           v-for="(node, i) in root.descendants()"
           :key="i"
+          :class="{ selected: selectedNode && node.data == selectedNode.data }"
           :d="sunburstArcGenerator(node)"
           :fill="nodeColor(node)"
           stroke="black"
+          stroke-width="2"
           @click="
             () => {
               increaseNode(node);
+              selectNode(node);
+            }
+          "
+        />
+      </g>
+    </svg>
+    <svg width="45%" height="99vh" viewBox="0 0 1000 1000">
+      <g transform="translate(0, 0)">
+        <rect
+          v-for="(node, i) in root.descendants()"
+          :key="i"
+          :class="{ selected: selectedNode && node.data == selectedNode.data }"
+          :x="node.x0 * 1000"
+          :y="node.y0 * 1000"
+          :width="node.x1 * 1000 - node.x0 * 1000"
+          :height="node.y1 * 1000 - node.y0 * 1000"
+          :fill="nodeColor(node)"
+          stroke="black"
+          stroke-width="2"
+          @click="
+            () => {
+              increaseNode(node);
+              selectNode(node);
             }
           "
         />
@@ -23,11 +48,10 @@
 <script lang="ts">
 import { arc } from 'd3-shape';
 import { hierarchy, partition, HierarchyRectangularNode } from 'd3-hierarchy';
-import { schemeCategory10 } from 'd3-scale-chromatic';
+import { schemeDark2 } from 'd3-scale-chromatic';
 import { color as d3Color } from 'd3-color';
 
 export interface SunburstNode {
-  // color?: string
   children?: SunburstNode[];
   value: number;
   name?: string;
@@ -37,19 +61,20 @@ export interface ColoredHierarchyNode
   color?: string;
 }
 
-// console.log(d3)
-// const arc = d3.arc
-const sunburstArcGenerator = arc<ColoredHierarchyNode>()
-  .startAngle((d) => d.x0)
-  .endAngle((d) => d.x1)
-  .innerRadius((d) => d.y0)
-  .outerRadius((d) => d.y1);
+const chartSpaceHeight = 1000;
 
-const colors = schemeCategory10;
+const sunburstArcGenerator = arc<ColoredHierarchyNode>()
+  .startAngle((d) => d.x0 * Math.PI * 2)
+  .endAngle((d) => d.x1 * Math.PI * 2)
+  .innerRadius((d) => d.y0 * 0.5 * chartSpaceHeight)
+  .outerRadius((d) => d.y1 * 0.5 * chartSpaceHeight);
+
+const colors = schemeDark2;
 
 export default {
   data() {
     return {
+      selectedNode: undefined as ColoredHierarchyNode | undefined,
       sunburstData: {
         name: 'root',
         value: 0,
@@ -92,15 +117,14 @@ export default {
       );
       hierarchyRootUnPartitioned.sum((d) => d.value || 0);
       const hierarchyRoot: ColoredHierarchyNode = partition<SunburstNode>().size(
-        [2 * Math.PI, 500]
+        [1, 1]
       )(hierarchyRootUnPartitioned);
-      if (colors) {
-        hierarchyRoot.children &&
-          hierarchyRoot.children.forEach((node, i) => {
-            node.color = colors[i];
-          });
-        hierarchyRoot.color = 'white';
-      }
+
+      hierarchyRoot.children &&
+        hierarchyRoot.children.forEach((node, i) => {
+          node.color = colors[i];
+        });
+      hierarchyRoot.color = '#ccc';
       return hierarchyRoot;
     },
   },
@@ -123,21 +147,32 @@ export default {
     increaseNode(node: ColoredHierarchyNode) {
       node.data.value += 1;
     },
+    selectNode(node: ColoredHierarchyNode) {
+      this.selectedNode = node;
+    },
   },
 };
 </script>
 
 <style scoped>
 svg {
-  border: 1px solid #444;
+  border: 0px solid #444 inset;
 }
 g {
   fill: black;
 }
-path {
+path,
+rect {
   transition: 175ms linear;
 }
-path:hover {
+path:hover,
+rect:hover,
+.selected {
   fill: #444;
+  stroke: cornflowerblue;
+}
+
+.instruction {
+  position: absolute;
 }
 </style>
