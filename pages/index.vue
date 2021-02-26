@@ -11,20 +11,20 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import { schemeCategory10 } from 'd3-scale-chromatic'
+import Vue from 'vue';
+import { schemeCategory10 } from 'd3-scale-chromatic';
 
 export default Vue.extend({
   data() {
     return {
       message: 'hello from vue/d3',
       colors: schemeCategory10,
-    }
+    };
   },
   mounted() {
-    console.log('hello')
+    console.log('hello');
   },
-})
+});
 </script>
 
 <style module>
