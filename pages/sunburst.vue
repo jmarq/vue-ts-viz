@@ -22,13 +22,16 @@
 
 <script lang="ts">
 import { arc } from 'd3-shape'
-import { hierarchy, partition } from 'd3-hierarchy'
+import { hierarchy, partition, HierarchyRectangularNode } from 'd3-hierarchy'
 import { schemeCategory10 } from 'd3-scale-chromatic'
 import { color as d3Color } from 'd3-color'
 
+export interface ColoredHierarchyNode extends HierarchyRectangularNode<any> {
+  color?: string
+}
 // console.log(d3)
 // const arc = d3.arc
-const sunburstArcGenerator = arc()
+const sunburstArcGenerator = arc<HierarchyRectangularNode<any>>()
   .startAngle((d) => d.x0)
   .endAngle((d) => d.x1)
   .innerRadius((d) => d.y0)
@@ -72,15 +75,19 @@ export default {
   computed: {
     root() {
       console.log('computing root')
-      let hierarchyRoot = hierarchy(this.sunburstData)
-      hierarchyRoot.sum((d) => d.value)
-      hierarchyRoot = partition().size([2 * Math.PI, 500])(hierarchyRoot)
+      const hierarchyRootUnPartitioned = hierarchy(this.sunburstData)
+      hierarchyRootUnPartitioned.sum((d) => d.value)
+      const hierarchyRoot: ColoredHierarchyNode = partition().size([
+        2 * Math.PI,
+        500,
+      ])(hierarchyRootUnPartitioned)
       console.log(hierarchyRoot.descendants())
       if (colors) {
-        hierarchyRoot.children.forEach((node, i) => {
-          console.log(node)
-          node.color = colors[i]
-        })
+        hierarchyRoot.children &&
+          hierarchyRoot.children.forEach((node, i) => {
+            console.log(node)
+            node.color = colors[i]
+          })
         hierarchyRoot.color = 'white'
       }
       return hierarchyRoot
@@ -88,7 +95,7 @@ export default {
   },
   methods: {
     sunburstArcGenerator,
-    nodeColor(node): string {
+    nodeColor(node: ColoredHierarchyNode): string {
       if (node.color) {
         return node.color || 'black'
       } else if (node.parent) {
@@ -112,7 +119,7 @@ export default {
       )
         this.sunburstData.children[0].value += 3
     },
-    increaseNode(node) {
+    increaseNode(node: HierarchyRectangularNode<any>) {
       // this is flawed because it increments the computed node, not the source data.
       // seems like it'd need to be able to hook into a specific child in sunburstData by id/path or something
       // No! actually you can get to the underlying data using node.data, which is still observed by Vue, it seems.
