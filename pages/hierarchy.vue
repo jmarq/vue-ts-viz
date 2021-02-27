@@ -1,8 +1,8 @@
 <template>
   <div>
     <p class="instruction">
-      Sunburst and Icicle charts based on shared data. Click on a segment to
-      increase its value in the underlying dataset.
+      Sunburst, Icicle, Circle Packing, and Treemap charts based on shared data.
+      Click on a segment to increase its value in the underlying dataset.
     </p>
     <svg width="45vw" height="45vh" viewBox="0 0 1000 1000">
       <g transform="translate(500, 500)">
@@ -197,15 +197,15 @@ export default {
     },
     packRoot() {
       console.log('computing packed layout');
-      const packer = d3Pack().size([1000, 1000]).padding(3);
+      const packer = d3Pack<HierarchicalNode>().size([1000, 1000]).padding(3);
       const packed = packer(this.hierarchy);
       console.log({ packed });
       return packed;
     },
     treemapRoot() {
       console.log('computing treemap layout');
-      const mapper = d3Treemap().size([1000, 1000]);
-      const mapped = mapper(this.hierarchy);
+      const mapper = d3Treemap<HierarchicalNode>().size([1000, 1000]);
+      const mapped: ColoredPartitionNode = mapper(this.hierarchy);
       console.log({ mapped });
       return mapped;
     },
