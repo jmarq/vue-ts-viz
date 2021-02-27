@@ -218,7 +218,7 @@ export default {
       } else if (node.parent) {
         const parentColor = d3Color(this.nodeColor(node.parent));
         if (parentColor) {
-          return '' + parentColor.brighter(0.3 * node.depth);
+          return '' + parentColor.brighter(0.2 * node.depth);
         } else {
           return 'black';
         }
@@ -241,14 +241,17 @@ svg {
   border: 0px solid #444 inset;
   user-select: none;
 }
+
 g {
   fill: black;
 }
+
 path,
 rect,
 circle {
   transition: 175ms linear;
 }
+
 path:hover,
 rect:hover,
 circle:hover {
