@@ -4,7 +4,7 @@
       Sunburst, Icicle, Circle Packing, and Treemap charts based on shared data.
       Click on a segment to increase its value in the underlying dataset.
       <button @click="randomIncrease">random increase</button>
-      <button @click="randomNewChild">random new childh</button>
+      <button @click="randomNewChild">random new child</button>
       <button @click="randomChange">random change</button>
     </p>
     <svg width="45vw" height="45vh" viewBox="0 0 1000 1000">
