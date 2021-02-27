@@ -198,7 +198,7 @@ export default {
     packRoot() {
       console.log('computing packed layout');
       const packer = d3Pack<HierarchicalNode>().size([1000, 1000]).padding(3);
-      const packed = packer(this.hierarchy);
+      const packed: ColoredHierarchyNode = packer(this.hierarchy);
       console.log({ packed });
       return packed;
     },
