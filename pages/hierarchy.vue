@@ -3,6 +3,9 @@
     <p class="instruction">
       Sunburst, Icicle, Circle Packing, and Treemap charts based on shared data.
       Click on a segment to increase its value in the underlying dataset.
+      <button @click="randomIncrease">random increase</button>
+      <button @click="randomNewChild">random new childh</button>
+      <button @click="randomChange">random change</button>
     </p>
     <svg width="45vw" height="45vh" viewBox="0 0 1000 1000">
       <g transform="translate(500, 500)">
@@ -93,14 +96,17 @@
 
 <script lang="ts">
 import { arc } from 'd3-shape';
+import Vue from 'vue';
 import {
   hierarchy as d3Hierarchy,
   partition as d3Partition,
   pack as d3Pack,
   treemap as d3Treemap,
   HierarchyRectangularNode,
+  HierarchyCircularNode,
   HierarchyNode,
 } from 'd3-hierarchy';
+import { shuffle as d3Shuffle } from 'd3-array';
 import { schemeDark2 } from 'd3-scale-chromatic';
 import { color as d3Color } from 'd3-color';
 
@@ -120,6 +126,10 @@ export interface ColoredHierarchyNode
 
 export interface ColoredPartitionNode
   extends HierarchyRectangularNode<HierarchicalNode>,
+    ColoredNode {}
+
+export interface ColoredCircularNode
+  extends HierarchyCircularNode<HierarchicalNode>,
     ColoredNode {}
 
 const chartSpaceHeight = 1000;
@@ -185,6 +195,7 @@ export default {
           node.color = colors[i];
         });
       hierarchyRoot.color = '#ccc';
+      console.log(hierarchyRoot.descendants());
       return hierarchyRoot;
     },
     partitionRoot() {
@@ -192,13 +203,12 @@ export default {
       const partitionRoot: ColoredPartitionNode = d3Partition<HierarchicalNode>().size(
         [1, 1]
       )(this.hierarchy);
-      console.log(this.packRoot);
       return partitionRoot;
     },
     packRoot() {
       console.log('computing packed layout');
       const packer = d3Pack<HierarchicalNode>().size([1000, 1000]).padding(3);
-      const packed: ColoredHierarchyNode = packer(this.hierarchy);
+      const packed: ColoredCircularNode = packer(this.hierarchy);
       console.log({ packed });
       return packed;
     },
@@ -212,7 +222,7 @@ export default {
   },
   methods: {
     sunburstArcGenerator,
-    nodeColor(node: ColoredPartitionNode | ColoredHierarchyNode): string {
+    nodeColor(node: ColoredHierarchyNode): string {
       if (node.color) {
         return node.color;
       } else if (node.parent) {
@@ -231,6 +241,35 @@ export default {
     },
     selectNode(node: ColoredPartitionNode | ColoredHierarchyNode) {
       this.selectedNode = node;
+    },
+    randomIncrease() {
+      const nodes: ColoredHierarchyNode[] = [...this.hierarchy.descendants()];
+      const shuffled = d3Shuffle(nodes);
+      const nodeToIncrease = shuffled[0];
+      nodeToIncrease.data.value += Math.random() * 5;
+      this.selectedNode = nodeToIncrease;
+    },
+    randomNewChild() {
+      const nodes: ColoredHierarchyNode[] = [...this.hierarchy.descendants()];
+      const shuffled = d3Shuffle(nodes);
+      const nodeToAddChildTo = shuffled[0].data;
+      const newChild: HierarchicalNode = {
+        value: 1,
+        children: [],
+      };
+      if (nodeToAddChildTo.children) {
+        nodeToAddChildTo.children.push(newChild);
+      } else {
+        Vue.set(nodeToAddChildTo, 'children', [newChild]);
+      }
+      this.selectedNode = shuffled[0];
+    },
+    randomChange() {
+      if (Math.random() >= 0.5) {
+        this.randomIncrease();
+      } else {
+        this.randomNewChild();
+      }
     },
   },
 };
