@@ -1,5 +1,11 @@
 <template>
   <div>
+    <p>
+      How would you design a stack which, in addition to push and pop, has a
+      function "min" which returns the minimum element? Push, pop, and min
+      should all operate in O(1) time.
+    </p>
+    <p>perhaps by using two stacks?</p>
     <button :disabled="stack.length >= 10" @click="pushOne">
       push random value
     </button>
@@ -35,7 +41,7 @@
       <svg
         width="50px"
         height="500px"
-        viewbox="0 0 50 500"
+        viewBox="0 0 50 500"
         overflow="visible"
         preserveAspectRatio="none"
       >
@@ -125,7 +131,12 @@ export default Vue.extend({
   display: flex;
 }
 p {
-  font-size: 1rem;
+  font-size: 1.25rem;
+}
+
+button {
+  font-size: 16px;
+  padding: 10px;
 }
 
 ul {
