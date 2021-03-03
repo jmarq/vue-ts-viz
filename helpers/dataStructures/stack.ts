@@ -17,17 +17,8 @@ export interface IMinStack<t> extends IStack<t> {
 }
 
 export default class Stack<t> implements IStack<t> {
-  // constructor() {
-  //   this.top = null;
-  // }
-
   top: IStackNode<t> | null = null;
   length = 0;
-
-  // get length() {
-  //   const vals = [...this.values()];
-  //   return vals.length;
-  // }
 
   get items(): t[] {
     const vals = [...this.values()];
@@ -100,14 +91,6 @@ export class MinStack<t> implements IMinStack<t> {
   get items() {
     return this.realStack.items;
   }
-
-  // *values(): Generator<t> {
-  //   let current = this.top;
-  //   while (current) {
-  //     yield current.data;
-  //     current = current.under;
-  //   }
-  // }
 
   push(value: t) {
     this.realStack.push(value);
