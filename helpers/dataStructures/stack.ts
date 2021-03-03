@@ -10,6 +10,7 @@ export interface IStack<t> {
   push(value: t): void;
   pop(): t | null;
   items: t[];
+  length: number;
 }
 
 export interface IMinStack<t> extends IStack<t> {

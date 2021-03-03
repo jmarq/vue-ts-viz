@@ -86,6 +86,34 @@
         </li>
       </ul>
     </div>
+    <div>
+      <p>a queue</p>
+      <svg
+        width="500px"
+        height="50px"
+        viewBox="0 0 500 50"
+        preserveAspectRatio="none"
+        overflow="visible"
+      >
+        <transition-group name="queue" tag="g">
+          <g v-for="(node, i) in queue.items" :key="node.id">
+            <g
+              class="positioned-group"
+              :transform="`translate(${500 - squareHeight * i},0)`"
+            >
+              <rect
+                :fill="node.color"
+                :y="0"
+                x="0"
+                :width="squareHeight"
+                :height="squareHeight"
+              ></rect>
+              <text x="16" y="32">{{ node.value }}</text>
+            </g>
+          </g>
+        </transition-group>
+      </svg>
+    </div>
   </div>
 </template>
 
@@ -93,6 +121,7 @@
 import Vue from 'vue';
 import { interpolateSpectral } from 'd3-scale-chromatic';
 import { MinStack } from '@/helpers/dataStructures/stack';
+import Queue from '@/helpers/dataStructures/queue';
 
 interface VizNode {
   value: number;
@@ -106,20 +135,25 @@ const dumbNum = () => Math.floor(Math.random() * 100);
 export default Vue.extend({
   data() {
     const myStack = new MinStack<VizNode>((n) => n.value);
+    const myQueue = new Queue<VizNode>();
     return {
       stack: myStack,
+      queue: myQueue,
       squareHeight: 50,
     };
   },
   methods: {
     pushOne() {
-      this.stack.push({
+      const newNode: VizNode = {
         value: dumbNum(),
         id: dumbId(),
         color: interpolateSpectral(Math.random()),
-      });
+      };
+      this.stack.push(newNode);
+      this.queue.push(newNode);
     },
     popOne(): VizNode | null {
+      this.queue.pop();
       return this.stack.pop();
     },
   },
@@ -151,6 +185,10 @@ svg {
   border: 1px solid cornflowerblue;
 }
 
+.positioned-group {
+  transition: 300ms linear;
+}
+
 .stack-enter-active,
 .stack-leave-active {
   transition: 300ms linear;
@@ -160,5 +198,16 @@ svg {
 }
 .stack-enter {
   transform: translate(0, -500px);
+}
+
+.queue-enter-active,
+.queue-leave-active {
+  transition: 300ms linear;
+}
+.queue-leave-to {
+  transform: translate(500px, 0);
+}
+.queue-enter {
+  transform: translate(-500px, 0);
 }
 </style>
