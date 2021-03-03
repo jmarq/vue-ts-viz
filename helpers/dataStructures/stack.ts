@@ -9,11 +9,13 @@ export interface IStack<t> {
   top: IStackNode<t> | null;
   push(value: t): void;
   pop(): t | null;
+  items: t[];
 }
 
 export interface IMinStack<t> extends IStack<t> {
   min: t | null;
   minAccessor(node: t): any;
+  minStack: IStack<t>;
 }
 
 export default class Stack<t> implements IStack<t> {
@@ -62,21 +64,18 @@ How would you design a stack which, in addition to push and pop, has a
 function "min" which returns the minimum element? Push, pop, and min
 should all operate in O(1) time.
 */
-export class MinStack<t> implements IMinStack<t> {
+
+export class MinStack<t> extends Stack<t> implements IMinStack<t> {
   constructor(minAccessor = (value: t) => value as any) {
-    this.realStack = new Stack<t>();
+    super();
     this.minStack = new Stack<t>();
     this.minAccessor = minAccessor;
   }
 
+  minStack: Stack<t>;
+
   minAccessor(value: t) {
     return value;
-  }
-
-  realStack: Stack<t>;
-  minStack: Stack<t>;
-  get top() {
-    return this.realStack.top;
   }
 
   get min() {
@@ -86,20 +85,8 @@ export class MinStack<t> implements IMinStack<t> {
     return null;
   }
 
-  get values() {
-    return this.realStack.values;
-  }
-
-  get length() {
-    return this.realStack.length;
-  }
-
-  get items() {
-    return this.realStack.items;
-  }
-
   push(value: t) {
-    this.realStack.push(value);
+    super.push(value);
     if (
       this.minStack.top === null ||
       this.minAccessor(value) < this.minAccessor(this.minStack.top.data)
@@ -109,7 +96,7 @@ export class MinStack<t> implements IMinStack<t> {
   }
 
   pop() {
-    const result = this.realStack.pop();
+    const result = super.pop();
     if (this.minStack.top && this.minStack.top.data === result) {
       this.minStack.pop();
     }
