@@ -3,11 +3,24 @@
     <h1>bubble sort</h1>
     <!-- <p><button @click="swap(3, 4)">swap</button></p>
     <p><button @click="multiSwap">multiSwap?</button></p> -->
-    <p><button @click="bubbleSort">sort?</button></p>
+    <p><button @click="bubbleSort">sort</button></p>
+    <p>
+      <label for="speed">
+        slowness
+        <input
+          id="speed"
+          v-model.number="delay"
+          type="range"
+          min="100"
+          max="1000"
+          step="100"
+        />
+      </label>
+    </p>
 
     <svg
-      width="500px"
-      height="60px"
+      width="1000px"
+      height="120px"
       viewBox="0 0 500 60"
       preserveAspectRatio="none"
       overflow="visible"
@@ -35,7 +48,7 @@
         :cy="squareHeight + 5"
         :cx="squareHeight * current + squareHeight / 2"
         :r="5"
-        fill="blue"
+        fill="red"
       ></circle>
       <circle
         :cy="squareHeight + 5"
@@ -88,6 +101,7 @@ export default Vue.extend({
       list: [],
       squareHeight: 50,
       current: 0,
+      delay: 300,
     };
   },
   computed: {
@@ -105,16 +119,10 @@ export default Vue.extend({
   },
   methods: {
     swap(i: number, j: number) {
-      // const temp = this.list[i];
-      // this.list[i] = this.list[j];
-      // this.list[j] = temp;
-      // Vue.set(this, 'list', [...this.list]);
-      Vue.set(this, 'list', [
-        ...this.list.slice(0, i),
-        this.list[j],
-        this.list[i],
-        ...this.list.slice(j + 1),
-      ]);
+      const temp = this.list[i];
+      this.list[i] = this.list[j];
+      this.list[j] = temp;
+      Vue.set(this, 'list', [...this.list]);
     },
     valueAt(i: number) {
       return this.list[i].value;
@@ -125,20 +133,19 @@ export default Vue.extend({
       this.swap(this.current, this.comparingWith);
     },
     async bubbleSort() {
-      const delay = 300;
       if (this.list.length < 2) {
         return;
       }
       let swapsMade = true;
       while (swapsMade) {
         this.current = 0;
-        await sleep(delay);
+        await sleep(this.delay);
         swapsMade = false;
         while (this.current < this.list.length - 1) {
-          await sleep(delay);
+          await sleep(this.delay);
           if (this.valueAt(this.current) > this.valueAt(this.comparingWith)) {
             this.swap(this.current, this.comparingWith);
-            await sleep(delay);
+            await sleep(this.delay);
 
             swapsMade = true;
           }
@@ -151,6 +158,18 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+button {
+  padding: 10px;
+  font-size: 1rem;
+  margin: 10px;
+}
+label { 
+  margin: 10px;
+}
+
+svg {
+  margin: 10px;
+}
 .positioned-group,
 rect,
 text,
