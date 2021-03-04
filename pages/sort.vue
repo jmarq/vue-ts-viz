@@ -98,7 +98,7 @@ export default Vue.extend({
     // }
     return {
       // list: myData,
-      list: [],
+      list: [] as VizNode[],
       squareHeight: 50,
       current: 0,
       delay: 300,
