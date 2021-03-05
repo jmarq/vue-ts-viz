@@ -11,7 +11,7 @@
     </p>
     <hr />
     <p>
-      axis scale: 0<input
+      axis range: 0<input
         v-model.number="scaleMax"
         type="range"
         min="0"
@@ -19,7 +19,7 @@
         step="10"
       />100
     </p>
-    <p>current scale: {{ scaleMax }}</p>
+    <p>current range: {{ scaleMax }}</p>
 
     <svg
       width="800"
@@ -98,9 +98,18 @@ p {
   margin-bottom: 0.5em;
   margin-top: 0.5em;
 }
+input {
+  margin-left: 8px;
+  margin-right: 8px;
+}
 svg {
   /* margin: 20px; */
   /* border: 1px solid red; */
+}
+
+/* using deep selectors because these elements are under D3's control */
+g >>> g.tick {
+  transition: 300ms ease-out;
 }
 
 g >>> text {
