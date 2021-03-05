@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="page-wrapper">
     <p>
       How would you design a stack which, in addition to push and pop, has a
       function "min" which returns the minimum element? Push, pop, and min
@@ -163,6 +163,10 @@ export default Vue.extend({
 <style scoped>
 .viz-wrapper {
   display: flex;
+}
+
+.page-wrapper {
+  margin: 20px;
 }
 p {
   font-size: 1.25rem;
