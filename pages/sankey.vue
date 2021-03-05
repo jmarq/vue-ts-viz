@@ -1,6 +1,11 @@
 <template>
   <div>
-    <svg width="99vw" height="99vh" viewBox="0 0 1000 1000">
+    <svg
+      width="100%"
+      height="90vh"
+      viewBox="0 0 1000 1000"
+      preserveAspectRatio="auto"
+    >
       <rect
         v-for="node in sankey.nodes"
         :key="node.id"

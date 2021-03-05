@@ -1,13 +1,19 @@
 <template>
   <div>
-    <p class="instruction">
-      Sunburst, Icicle, Circle Packing, and Treemap charts based on shared data.
-      Click on a segment to increase its value in the underlying dataset.
-      <button @click="randomIncrease">random increase</button>
-      <button @click="randomNewChild">random new child</button>
-      <button @click="randomChange">random change</button>
-    </p>
-    <svg width="45vw" height="45vh" viewBox="0 0 1000 1000">
+    <h1>hierarchy layouts</h1>
+    <div class="instruction">
+      <p>
+        Sunburst, Icicle, Circle Packing, and Treemap charts based on shared
+        data. Click on a segment to increase its value in the underlying
+        dataset.
+      </p>
+      <div>
+        <button @click="randomIncrease">random increase</button>
+        <button @click="randomNewChild">random new child</button>
+        <button @click="randomChange">random change</button>
+      </div>
+    </div>
+    <svg width="45vw" height="40vh" viewBox="0 0 1000 1000">
       <g transform="translate(500, 500)">
         <path
           v-for="(node, i) in partitionRoot.descendants()"
@@ -26,7 +32,7 @@
         />
       </g>
     </svg>
-    <svg width="45vw" height="45vh" viewBox="0 0 1000 1000">
+    <svg width="45vw" height="40vh" viewBox="0 0 1000 1000">
       <g transform="translate(0, 0)">
         <rect
           v-for="(node, i) in partitionRoot.descendants()"
@@ -48,7 +54,7 @@
         />
       </g>
     </svg>
-    <svg width="45vw" height="45vh" viewBox="0 0 1000 1000">
+    <svg width="45vw" height="40vh" viewBox="0 0 1000 1000">
       <g transform="translate(0, 0)">
         <circle
           v-for="(node, i) in packRoot.descendants()"
@@ -69,7 +75,7 @@
         />
       </g>
     </svg>
-    <svg width="45vw" height="45vh" viewBox="0 0 1000 1000">
+    <svg width="45vw" height="40vh" viewBox="0 0 1000 1000">
       <g transform="translate(0, 0)">
         <rect
           v-for="(node, i) in treemapRoot.descendants()"
@@ -285,6 +291,17 @@ g {
   fill: black;
 }
 
+h1 {
+  margin-bottom: 10px;
+}
+p {
+  margin-bottom: 10px;
+}
+button {
+  font-size: 1em;
+  padding: 10px;
+}
+
 path,
 rect,
 circle {
@@ -303,6 +320,6 @@ circle:hover {
 }
 
 .instruction {
-  position: absolute;
+  /* position: absolute; */
 }
 </style>

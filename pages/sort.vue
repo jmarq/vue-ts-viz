@@ -1,6 +1,10 @@
 <template>
   <div>
     <h1>bubble sort</h1>
+    <p>
+      an attempt at visualizing the classically inefficient bubble sort
+      algorithm
+    </p>
     <!-- <p><button @click="swap(3, 4)">swap</button></p>
     <p><button @click="multiSwap">multiSwap?</button></p> -->
     <p><button @click="bubbleSort">sort</button></p>
@@ -163,7 +167,7 @@ button {
   font-size: 1rem;
   margin: 10px;
 }
-label { 
+label {
   margin: 10px;
 }
 

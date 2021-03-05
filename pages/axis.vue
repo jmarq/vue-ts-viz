@@ -9,6 +9,7 @@
       this seems to be because D3 .ticks() generated tick values "want" to be
       multiples of 2, 5, 10
     </p>
+    <hr />
     <p>
       axis scale: 0<input
         v-model.number="scaleMax"
@@ -24,7 +25,8 @@
       width="800"
       height="800"
       viewBox="0 0 800 800"
-      preserveAspectRatio="none"
+      preserveAspectRatio="auto"
+      overflow="visible"
     >
       <g v-for="(count, i) in tickCounts" :key="count">
         <g
@@ -95,9 +97,14 @@ export default Vue.extend({
 .wrapper {
   margin: 20px;
 }
+
+p {
+  margin-bottom: 0.5em;
+  margin-top: 0.5em;
+}
 svg {
-  margin: 20px;
-  border: 1px solid red;
+  /* margin: 20px; */
+  /* border: 1px solid red; */
 }
 
 g >>> text {
@@ -107,6 +114,7 @@ g >>> text {
 .meta-axis >>> text {
   font-size: 16px;
   font-weight: bold;
+  font-family: 'Inconsolata';
 }
 .meta-axis >>> g.tick line {
   stroke-dasharray: 2 2;
