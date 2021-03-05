@@ -3,8 +3,9 @@
     <div class="site-title">
       <em>Vue/Nuxt/D3/Visualization sketches</em>
       <a
-        href="https://github.com/jmarq/vue-ts-viz/tree/master/pages"
-        title="view code on GitHub"
+        :href="`https://github.com/jmarq/vue-ts-viz/blob/master/pages/${whichPage}.vue`"
+        target="_blank"
+        title="view this page's code on GitHub"
       >
         <svg
           width="18"
@@ -25,6 +26,17 @@
     <Nuxt />
   </div>
 </template>
+
+<script lang="ts">
+import Vue from 'vue';
+export default Vue.extend({
+  computed: {
+    whichPage(): string | null | undefined {
+      return this.$router.currentRoute.name;
+    },
+  },
+});
+</script>
 
 <style>
 html {
