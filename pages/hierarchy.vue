@@ -16,8 +16,8 @@
     <svg width="45vw" height="40vh" viewBox="0 0 1000 1000">
       <g transform="translate(500, 500)">
         <path
-          v-for="(node, i) in partitionRoot.descendants()"
-          :key="i"
+          v-for="node in partitionRoot.descendants()"
+          :key="node.data.name"
           :class="{ selected: selectedNode && node.data == selectedNode.data }"
           :d="sunburstArcGenerator(node)"
           :fill="nodeColor(node)"
@@ -35,8 +35,8 @@
     <svg width="45vw" height="40vh" viewBox="0 0 1000 1000">
       <g transform="translate(0, 0)">
         <rect
-          v-for="(node, i) in partitionRoot.descendants()"
-          :key="i"
+          v-for="node in partitionRoot.descendants()"
+          :key="node.data.name"
           :class="{ selected: selectedNode && node.data == selectedNode.data }"
           :x="node.x0 * 1000"
           :y="node.y0 * 1000"
@@ -57,8 +57,8 @@
     <svg width="45vw" height="40vh" viewBox="0 0 1000 1000">
       <g transform="translate(0, 0)">
         <circle
-          v-for="(node, i) in packRoot.descendants()"
-          :key="i"
+          v-for="node in packRoot.descendants()"
+          :key="node.data.name"
           :class="{ selected: selectedNode && node.data == selectedNode.data }"
           :fill="nodeColor(node)"
           stroke="black"
@@ -78,8 +78,8 @@
     <svg width="45vw" height="40vh" viewBox="0 0 1000 1000">
       <g transform="translate(0, 0)">
         <rect
-          v-for="(node, i) in treemapRoot.descendants()"
-          :key="i"
+          v-for="node in treemapRoot.descendants()"
+          :key="node.data.name"
           :class="{ selected: selectedNode && node.data == selectedNode.data }"
           :x="node.x0"
           :y="node.y0"
@@ -115,6 +115,10 @@ import {
 import { shuffle as d3Shuffle } from 'd3-array';
 import { schemeDark2 } from 'd3-scale-chromatic';
 import { color as d3Color } from 'd3-color';
+
+const randomId = (): string => {
+  return '' + Math.floor(Math.random() * 10000000);
+};
 
 export interface HierarchicalNode {
   children?: HierarchicalNode[];
@@ -160,30 +164,19 @@ export default {
         value: 0,
         children: [
           {
-            value: 2,
-          },
-          {
             name: 'child1',
-            value: 0,
-            children: [
-              { name: 'gc1', value: 1 },
-              {
-                name: 'gc2',
-                value: 0,
-                children: [
-                  { value: 2 },
-                  { value: 0, children: [{ value: 1 }, { value: 1 }] },
-                ],
-              },
-            ],
+            value: 1,
+            children: [],
           },
           {
             name: 'child2',
-            value: 0,
-            children: [
-              { name: 'gc3', value: 2 },
-              { name: 'gc4', value: 1 },
-            ],
+            value: 1,
+            children: [],
+          },
+          {
+            name: 'child3',
+            value: 1,
+            children: [],
           },
         ],
       },
@@ -262,6 +255,7 @@ export default {
       const newChild: HierarchicalNode = {
         value: 1,
         children: [],
+        name: randomId(),
       };
       if (nodeToAddChildTo.children) {
         nodeToAddChildTo.children.push(newChild);

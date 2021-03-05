@@ -94,10 +94,6 @@ export default Vue.extend({
 </script>
 
 <style scoped>
-.wrapper {
-  margin: 20px;
-}
-
 p {
   margin-bottom: 0.5em;
   margin-top: 0.5em;
