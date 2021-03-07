@@ -84,7 +84,7 @@ function sleep(ms: number) {
 const dumbId = () => '' + Math.floor(Math.random() * 1000000);
 const dumbNum = () => Math.floor(Math.random() * 100);
 const colorValueScale = scaleLinear().domain([0, 100]).range([0, 1]);
-const newNode = (): VizNode => {
+export const newNode = (): VizNode => {
   const value = dumbNum();
   return {
     value,
