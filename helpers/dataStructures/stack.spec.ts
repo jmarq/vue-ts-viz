@@ -17,6 +17,15 @@ describe('Stack', () => {
     const result = subject.length;
     expect(result).toEqual(3);
   });
+
+  it('can return a list of elements', () => {
+    const subject = new Stack<number>();
+    subject.push(1);
+    subject.push(2);
+    subject.push(3);
+    const result = subject.items;
+    expect(result).toEqual([3, 2, 1]);
+  });
 });
 
 describe('MinStack', () => {
