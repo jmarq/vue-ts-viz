@@ -29,11 +29,12 @@ export default Vue.extend({
       open: false,
       links: [
         { path: 'hierarchy', name: 'hierarchy charts' },
-        { path: 'stacks', name: 'stacks' },
-        { path: 'sort', name: 'bubble sort' },
-        { path: 'sankey', name: 'sankey diagram' },
-        { path: 'spiral', name: 'radial spiral design' },
         { path: 'axis', name: 'axis experiment' },
+        { path: 'brush', name: 'brushing' },
+        { path: 'sankey', name: 'sankey diagram' },
+        { path: 'sort', name: 'bubble sort' },
+        { path: 'stacks', name: 'stacks' },
+        { path: 'spiral', name: 'radial spiral design' },
         { path: '/', name: 'home' },
       ],
     };
