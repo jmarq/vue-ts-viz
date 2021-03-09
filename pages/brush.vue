@@ -12,6 +12,18 @@
       preserveAspectRatio="none"
       overflow="visible"
     >
+      <g class="dots">
+        <transition-group name="dots" tag="g">
+          <circle
+            v-for="dot in visibleDots"
+            :key="dot"
+            :cx="dot"
+            cy="50"
+            r="25"
+            fill="black"
+          ></circle>
+        </transition-group>
+      </g>
       <g ref="axis" transform="translate(0 100)"></g>
       <g ref="brush"></g>
     </svg>
@@ -30,6 +42,7 @@ const brushDimensions: [number, number] = [500, 100];
 export default Vue.extend({
   data() {
     return {
+      dots: [100, 200, 300, 400],
       currentBrush: [0, 500],
     };
   },
@@ -37,6 +50,11 @@ export default Vue.extend({
   computed: {
     brushStrings() {
       return this.currentBrush.map((num) => Number(num).toFixed(2));
+    },
+    visibleDots() {
+      return this.dots.filter(
+        (d) => d >= this.currentBrush[0] && d <= this.currentBrush[1]
+      );
     },
   },
 
@@ -82,5 +100,14 @@ svg >>> .selection {
 
 svg >>> text {
   font-size: 16px;
+}
+
+.dots circle {
+  transition: 225ms ease-in;
+}
+
+.dots-enter,
+.dots-leave-to {
+  fill-opacity: 0;
 }
 </style>
