@@ -69,12 +69,14 @@ body {
   background-color: #fff;
   color: #222;
   margin: 20px;
+  margin-top: 8px;
   font-family: 'Ubuntu';
 }
 .top-bar {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
 }
 .site-title {
   font-family: 'Bree Serif';

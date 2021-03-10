@@ -76,16 +76,34 @@ export default Vue.extend({
   position: relative;
 }
 
+button.dropdown-trigger {
+  background-color: white;
+  font-family: 'Bree Serif';
+  padding: 8px;
+  border-radius: 8px;
+}
+
+button.dropdown-trigger:focus,
+button.dropdown-trigger:hover {
+  background-color: rgba(200, 230, 240, 0.9);
+}
+
 ul.links {
   position: absolute;
-  background-color: rgba(240, 240, 240, 0.9);
+  background-color: rgba(255, 255, 255, 0.9);
   padding: 20px;
   width: 200px;
+  box-shadow: 5px 5px 5px #333;
+  border-radius: 8px;
+  list-style: none;
 }
 
 ul.links a {
   display: block;
-  padding: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  font-family: 'Bree Serif';
+  font-size: 1.25em;
 }
 
 ul.links a:focus {
