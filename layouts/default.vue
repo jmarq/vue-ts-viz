@@ -39,7 +39,8 @@ export default Vue.extend({
   },
   computed: {
     whichPage(): string | null | undefined {
-      return this.$router.currentRoute.name;
+      const result = this.$route.name;
+      return result;
     },
   },
 });

@@ -5,7 +5,7 @@
       width="100%"
       height="90vh"
       viewBox="0 0 1000 1000"
-      preserveAspectRatio="auto"
+      preserveAspectRatio="none"
     >
       <rect
         v-for="node in sankey.nodes"
@@ -17,7 +17,7 @@
       ></rect>
       <path
         v-for="link in sankey.links"
-        :key="link.index"
+        :key="'' + link.to + '-' + link.from"
         class="link"
         :d="sankeyLinkHorizontal(link)"
         :stroke-width="link.width"

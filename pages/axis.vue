@@ -25,7 +25,7 @@
       width="800"
       height="800"
       viewBox="0 0 800 800"
-      preserveAspectRatio="auto"
+      preserveAspectRatio="none"
       overflow="visible"
     >
       <g v-for="(count, i) in tickCounts" :key="count">

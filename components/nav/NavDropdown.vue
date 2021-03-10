@@ -28,6 +28,7 @@ export default Vue.extend({
     return {
       open: false,
       links: [
+        { path: '/', name: 'home' },
         { path: 'hierarchy', name: 'hierarchy charts' },
         { path: 'axis', name: 'axis experiment' },
         { path: 'brush', name: 'brushing' },
@@ -35,7 +36,6 @@ export default Vue.extend({
         { path: 'sort', name: 'bubble sort' },
         { path: 'stacks', name: 'stacks' },
         { path: 'spiral', name: 'radial spiral design' },
-        { path: '/', name: 'home' },
       ],
     };
   },
