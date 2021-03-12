@@ -22,11 +22,6 @@ describe('sort page', () => {
     ];
     wrapper.vm.$data.delay = 0;
     await wrapper.vm.bubbleSort();
-    expect(wrapper.vm.$data.list.map((d: any) => d.value)).toEqual([
-      1,
-      2,
-      3,
-      'Bogus',
-    ]);
+    expect(wrapper.vm.$data.list.map((d: any) => d.value)).toEqual([1, 2, 3]);
   });
 });
