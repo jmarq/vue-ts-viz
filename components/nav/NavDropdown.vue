@@ -10,7 +10,7 @@
       Navigation
     </button>
     <transition name="dropdown">
-      <ul v-if="open" ref="links" class="links" @keyup="handleKey">
+      <ul v-show="open" ref="links" class="links" @keyup="handleKey">
         <li v-for="link in links" :key="link.path" @click="closeAndFocusButton">
           <nuxt-link :to="link.path" @blur.native="handleBlur">{{
             link.name

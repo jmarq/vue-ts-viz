@@ -78,6 +78,7 @@ body {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 0.5rem;
 }
 .site-title {
   font-family: 'Bree Serif';
