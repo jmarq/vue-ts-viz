@@ -29,6 +29,6 @@ export default Vue.extend({
 
 <style module>
 .large {
-  font-size: 72px;
+  font-size: 4.5rem;
 }
 </style>

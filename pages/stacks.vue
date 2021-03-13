@@ -14,8 +14,8 @@
     <p>current min: {{ stack.min && stack.min.value }}</p>
     <div class="viz-wrapper">
       <svg
-        width="50px"
-        height="500px"
+        width="3rem"
+        height="30rem"
         viewBox="0 0 50 500"
         overflow="visible"
         preserveAspectRatio="none"
@@ -40,8 +40,8 @@
         </transition-group>
       </svg>
       <svg
-        width="50px"
-        height="500px"
+        width="3rem"
+        height="30rem"
         viewBox="0 0 50 500"
         overflow="visible"
         preserveAspectRatio="none"
@@ -90,8 +90,8 @@
     <div>
       <p>a queue</p>
       <svg
-        width="500px"
-        height="50px"
+        width="30rem"
+        height="3rem"
         viewBox="0 0 500 50"
         preserveAspectRatio="none"
         overflow="visible"
@@ -174,8 +174,8 @@ p {
 }
 
 button {
-  font-size: 16px;
-  padding: 10px;
+  font-size: 1rem;
+  padding: 0.7rem;
 }
 
 ul {
@@ -188,7 +188,7 @@ ul p {
 
 svg {
   border: 1px solid cornflowerblue;
-  margin-right: 20px;
+  margin-right: 1.25rem;
 }
 
 .positioned-group {
@@ -200,10 +200,10 @@ svg {
   transition: 300ms linear;
 }
 .stack-leave-to {
-  transform: translate(0, -500px);
+  transform: translate(0, -30rem);
 }
 .stack-enter {
-  transform: translate(0, -500px);
+  transform: translate(0, -30rem);
 }
 
 .queue-enter-active,
@@ -211,9 +211,9 @@ svg {
   transition: 300ms linear;
 }
 .queue-leave-to {
-  transform: translate(500px, 0);
+  transform: translate(30rem, 0);
 }
 .queue-enter {
-  transform: translate(-500px, 0);
+  transform: translate(-30rem, 0);
 }
 </style>

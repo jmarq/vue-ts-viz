@@ -286,14 +286,14 @@ g {
 }
 
 h1 {
-  margin-bottom: 10px;
+  margin-bottom: 0.7rem;
 }
 p {
-  margin-bottom: 10px;
+  margin-bottom: 0.7rem;
 }
 button {
-  font-size: 1em;
-  padding: 10px;
+  font-size: 1rem;
+  padding: 0.7rem;
 }
 
 path,

@@ -79,8 +79,8 @@ export default Vue.extend({
 button.dropdown-trigger {
   background-color: white;
   font-family: 'Bree Serif';
-  padding: 8px;
-  border-radius: 8px;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
 }
 
 button.dropdown-trigger:focus,
@@ -91,24 +91,38 @@ button.dropdown-trigger:hover {
 ul.links {
   position: absolute;
   background-color: rgba(255, 255, 255, 0.9);
-  padding: 20px;
-  width: 200px;
-  box-shadow: 5px 5px 5px #333;
-  border-radius: 8px;
+  /* padding: 1.25rem; */
+  /* width: 12.5rem; */
+  box-shadow: 0.3rem 0.3rem 0.3rem #333;
+  border-radius: 0.5rem;
   list-style: none;
+  padding: 0;
+}
+
+ul.links li {
+  padding: 0;
 }
 
 ul.links a {
   display: block;
-  padding-top: 20px;
-  padding-bottom: 20px;
+  width: 14rem;
+
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
   font-family: 'Bree Serif';
   font-size: 1.25em;
+  color: black;
 }
 
 ul.links a:focus {
   background-color: rgba(200, 230, 240, 0.9);
   color: red;
+}
+
+ul.links a.nuxt-link-exact-active {
+  background-color: rgb(251, 251, 155);
 }
 
 .dropdown-leave-to,

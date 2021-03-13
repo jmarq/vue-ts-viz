@@ -10,8 +10,8 @@
           title="view this page's code on GitHub"
         >
           <svg
-            width="18"
-            height="18"
+            width="1rem"
+            height="1rem"
             overflow="visible"
             viewBox="0 0 32 32"
             alt="GitHub logo"
@@ -50,7 +50,7 @@ export default Vue.extend({
 html {
   font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
     Roboto, 'Helvetica Neue', Arial, sans-serif;
-  font-size: 16px;
+  font-size: 1rem;
   word-spacing: 1px;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;

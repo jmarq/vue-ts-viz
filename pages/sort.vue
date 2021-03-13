@@ -163,16 +163,16 @@ export default Vue.extend({
 
 <style scoped>
 button {
-  padding: 10px;
+  padding: 0.7rem;
   font-size: 1rem;
-  margin: 10px;
+  margin: 0.7rem;
 }
 label {
-  margin: 10px;
+  margin: 0.7rem;
 }
 
 svg {
-  margin: 10px;
+  margin: 0.7rem;
 }
 .positioned-group,
 rect,
@@ -182,7 +182,7 @@ circle {
 }
 
 .list-enter-active {
-  stroke-width: 3px;
+  stroke-width: 0.2rem;
   stroke: black;
 }
 

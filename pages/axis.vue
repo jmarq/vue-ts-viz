@@ -99,12 +99,8 @@ p {
   margin-top: 0.5em;
 }
 input {
-  margin-left: 8px;
-  margin-right: 8px;
-}
-svg {
-  /* margin: 20px; */
-  /* border: 1px solid red; */
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
 }
 
 /* using deep selectors because these elements are under D3's control */
@@ -113,11 +109,11 @@ g >>> g.tick {
 }
 
 g >>> text {
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 .meta-axis >>> text {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: bold;
   font-family: 'Inconsolata';
 }
