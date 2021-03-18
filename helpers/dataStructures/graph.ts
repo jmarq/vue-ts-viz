@@ -80,6 +80,31 @@ export default class Graph<t> {
     return results;
   }
 
+  *dfsGenerator(nodeId: string) {
+    // const results: t[] = [];
+    const startNode = this.nodes.find((n) => n.id === nodeId);
+    if (startNode) {
+      const visitedIds: string[] = [startNode.id];
+      const toVisit = [startNode];
+      while (toVisit.length > 0) {
+        const currentNode = toVisit.pop();
+        if (currentNode) {
+          // results.push(currentNode.value);
+          yield currentNode.value;
+          for (const neighbor of currentNode.neighbors.reverse()) {
+            if (!visitedIds.includes(neighbor.id)) {
+              toVisit.push(neighbor);
+              visitedIds.push(neighbor.id);
+            }
+          }
+        }
+      }
+    } else {
+      yield undefined;
+    }
+    // return results;
+  }
+
   bfs(nodeId: string): t[] {
     const results: t[] = [];
     const startNode = this.nodes.find((n) => n.id === nodeId);
@@ -103,6 +128,34 @@ export default class Graph<t> {
       }
     }
     return results;
+  }
+
+  *bfsGenerator(nodeId: string) {
+    // const results: t[] = [];
+    const startNode = this.nodes.find((n) => n.id === nodeId);
+    if (startNode) {
+      const toVisit = [startNode];
+      const visitedIds: string[] = [startNode.id];
+      const visit = (visitingNode: GraphNode<t>) => {
+        // results.push(visitingNode.value);
+        for (const neighbor of visitingNode.neighbors) {
+          if (!visitedIds.includes(neighbor.id)) {
+            toVisit.unshift(neighbor);
+            visitedIds.push(neighbor.id);
+          }
+        }
+      };
+      while (toVisit.length > 0) {
+        const current = toVisit.pop();
+        yield current?.value;
+        if (current) {
+          visit(current);
+        }
+      }
+    } else {
+      yield undefined;
+    }
+    // return results;
   }
 
   nodes: GraphNode<t>[] = [];
