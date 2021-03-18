@@ -94,7 +94,7 @@ export default class Graph<t> {
         if (currentNode) {
           // results.push(currentNode.value);
           yield yieldFunc(currentNode);
-          for (const neighbor of currentNode.neighbors.reverse()) {
+          for (const neighbor of [...currentNode.neighbors].reverse()) {
             if (!visitedIds.includes(neighbor.id)) {
               toVisit.push(neighbor);
               visitedIds.push(neighbor.id);
@@ -102,10 +102,7 @@ export default class Graph<t> {
           }
         }
       }
-    } else {
-      // yield undefined;
     }
-    // return results;
   }
 
   bfs(nodeId: string): t[] {
