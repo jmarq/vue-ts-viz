@@ -40,6 +40,19 @@ describe('Graph', () => {
     expect(result).toEqual([1, 2, 3, 4]);
   });
 
+  it('can depth first search using a stack', () => {
+    const myNodes = [
+      new GraphNode<number>('1', 1, ['2', '4']),
+      // 1 --> 2 --> 1 cycle
+      new GraphNode<number>('2', 2, ['3', '1']),
+      new GraphNode<number>('3', 3, []),
+      new GraphNode<number>('4', 4, []),
+    ];
+    const myGraph = new Graph<number>(myNodes);
+    const result = myGraph.dfsStack('1');
+    expect(result).toEqual([1, 2, 3, 4]);
+  });
+
   it('can breadth first search', () => {
     const myNodes = [
       new GraphNode<number>('1', 1, ['2', '4']),

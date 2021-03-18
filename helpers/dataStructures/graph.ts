@@ -58,6 +58,28 @@ export default class Graph<t> {
     return results;
   }
 
+  dfsStack(nodeId: string): t[] {
+    const results: t[] = [];
+    const startNode = this.nodes.find((n) => n.id === nodeId);
+    if (startNode) {
+      const visitedIds: string[] = [startNode.id];
+      const toVisit = [startNode];
+      while (toVisit.length > 0) {
+        const currentNode = toVisit.pop();
+        if (currentNode) {
+          results.push(currentNode.value);
+          for (const neighbor of currentNode.neighbors.reverse()) {
+            if (!visitedIds.includes(neighbor.id)) {
+              toVisit.push(neighbor);
+              visitedIds.push(neighbor.id);
+            }
+          }
+        }
+      }
+    }
+    return results;
+  }
+
   bfs(nodeId: string): t[] {
     const results: t[] = [];
     const startNode = this.nodes.find((n) => n.id === nodeId);
