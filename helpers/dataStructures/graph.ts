@@ -80,7 +80,10 @@ export default class Graph<t> {
     return results;
   }
 
-  *dfsGenerator(nodeId: string) {
+  *dfsGenerator(
+    nodeId: string,
+    yieldFunc = (node: GraphNode<t>) => node.value as any
+  ) {
     // const results: t[] = [];
     const startNode = this.nodes.find((n) => n.id === nodeId);
     if (startNode) {
@@ -90,7 +93,7 @@ export default class Graph<t> {
         const currentNode = toVisit.pop();
         if (currentNode) {
           // results.push(currentNode.value);
-          yield currentNode.value;
+          yield yieldFunc(currentNode);
           for (const neighbor of currentNode.neighbors.reverse()) {
             if (!visitedIds.includes(neighbor.id)) {
               toVisit.push(neighbor);
@@ -100,7 +103,7 @@ export default class Graph<t> {
         }
       }
     } else {
-      yield undefined;
+      // yield undefined;
     }
     // return results;
   }
@@ -130,7 +133,10 @@ export default class Graph<t> {
     return results;
   }
 
-  *bfsGenerator(nodeId: string) {
+  *bfsGenerator(
+    nodeId: string,
+    yieldFunc = (node: GraphNode<t>) => node.value as any
+  ) {
     // const results: t[] = [];
     const startNode = this.nodes.find((n) => n.id === nodeId);
     if (startNode) {
@@ -147,13 +153,13 @@ export default class Graph<t> {
       };
       while (toVisit.length > 0) {
         const current = toVisit.pop();
-        yield current?.value;
         if (current) {
+          yield yieldFunc(current);
           visit(current);
         }
       }
     } else {
-      yield undefined;
+      // yield undefined;
     }
     // return results;
   }
