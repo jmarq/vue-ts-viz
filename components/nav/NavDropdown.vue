@@ -33,6 +33,7 @@ export default Vue.extend({
         { path: 'axis', name: 'axis experiment' },
         { path: 'brush', name: 'brushing' },
         { path: 'sankey', name: 'sankey diagram' },
+        { path: 'graph', name: 'graph traversal' },
         { path: 'sort', name: 'bubble sort' },
         { path: 'stacks', name: 'stacks' },
         { path: 'spiral', name: 'radial spiral design' },

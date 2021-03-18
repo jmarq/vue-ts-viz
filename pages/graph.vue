@@ -1,5 +1,6 @@
 <template>
   <div class="page-wrapper">
+    <h1>graph traversal</h1>
     <button @click="dfs">depth first search</button>
     <button @click="bfs">breadth first search</button>
     <div>
