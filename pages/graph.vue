@@ -3,13 +3,14 @@
     <h1>graph traversal</h1>
     <button @click="dfs">depth first search</button>
     <button @click="bfs">breadth first search</button>
+    <button @click="bothSearches">both searches</button>
     <button @click="addNode">add a node</button>
     <button @click="addNodes">add five nodes</button>
 
     <div>
       <svg
-        :width="`${graphWidth}px`"
-        :height="`${graphHeight}px`"
+        :width="`${graphWidth / 1.5}px`"
+        :height="`${graphHeight / 1.5}px`"
         :viewBox="`0 0 ${graphWidth} ${graphHeight}`"
       >
         <line
@@ -28,7 +29,31 @@
           r="8"
           :cx="node.x"
           :cy="node.y"
-          :fill="visitedNodes.includes(node.id) ? '#f20' : '#238'"
+          :fill="bfsVisitedNodes.includes(node.id) ? '#f20' : '#238'"
+        ></circle>
+      </svg>
+      <svg
+        :width="`${graphWidth / 1.5}px`"
+        :height="`${graphHeight / 1.5}px`"
+        :viewBox="`0 0 ${graphWidth} ${graphHeight}`"
+      >
+        <line
+          v-for="link in d3Graph.links"
+          :key="`${link.source.id}->${link.target.id}`"
+          stroke="#888"
+          stroke-width="2"
+          :x1="link.source.x"
+          :y1="link.source.y"
+          :x2="link.target.x"
+          :y2="link.target.y"
+        ></line>
+        <circle
+          v-for="node in d3Graph.nodes"
+          :key="node.id"
+          r="8"
+          :cx="node.x"
+          :cy="node.y"
+          :fill="dfsVisitedNodes.includes(node.id) ? '#f20' : '#238'"
         ></circle>
       </svg>
     </div>
@@ -105,10 +130,14 @@ export default Vue.extend({
     return {
       graph: myGraph,
       visitedNodes: [] as number[],
+      bfsVisitedNodes: [] as number[],
+      dfsVisitedNodes: [] as number[],
       graphWidth: 1000,
       graphHeight: 700,
       msBetweenVisits: 150,
       currentRun: '',
+      currentBfsRun: '',
+      currentDfsRun: '',
     };
   },
   computed: {
@@ -143,18 +172,22 @@ export default Vue.extend({
         this.addNode();
       }
     },
+    bothSearches() {
+      this.dfs();
+      this.bfs();
+    },
     async dfs() {
       const runId = uuid();
-      this.currentRun = runId;
-      this.visitedNodes = [];
+      this.currentDfsRun = runId;
+      this.dfsVisitedNodes = [];
       const generator = this.graph.dfsGenerator('1', (node) => node.id);
       for (const nodeValue of generator) {
         await new Promise((resolve) =>
           setTimeout(resolve, this.msBetweenVisits)
         );
-        if (this.currentRun === runId) {
+        if (this.currentDfsRun === runId) {
           if (nodeValue) {
-            this.visitedNodes = [...this.visitedNodes, nodeValue];
+            this.dfsVisitedNodes = [...this.dfsVisitedNodes, nodeValue];
           }
         } else {
           break;
@@ -163,16 +196,16 @@ export default Vue.extend({
     },
     async bfs() {
       const runId = uuid();
-      this.currentRun = runId;
-      this.visitedNodes = [];
+      this.currentBfsRun = runId;
+      this.bfsVisitedNodes = [];
       const generator = this.graph.bfsGenerator('1', (node) => node.id);
       for (const nodeValue of generator) {
         await new Promise((resolve) =>
           setTimeout(resolve, this.msBetweenVisits)
         );
-        if (this.currentRun === runId) {
+        if (this.currentBfsRun === runId) {
           if (nodeValue) {
-            this.visitedNodes = [...this.visitedNodes, nodeValue];
+            this.bfsVisitedNodes = [...this.bfsVisitedNodes, nodeValue];
           }
         } else {
           break;
