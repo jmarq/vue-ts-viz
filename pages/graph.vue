@@ -39,12 +39,10 @@ import {
   SimulationNodeDatum,
   SimulationLinkDatum,
 } from 'd3-force';
-/*
- const simulation = d3.forceSimulation(nodes)
-      .force("link", d3.forceLink(links).id(d => d.id))
-      .force("charge", d3.forceManyBody())
-      .force("center", d3.forceCenter(width / 2, height / 2));
-*/
+
+// hmmm is this constructor making things more difficult than it needs to?
+// do I need to declare the links as part of the nodes themselves?
+// maybe nodes and links could be declared separately, and passed in and managed by the Graph
 const myNodes = [
   new GraphNode<number>('1', 1, ['2', '4']),
   // 1 --> 2 --> 1 cycle

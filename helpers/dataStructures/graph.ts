@@ -155,10 +155,7 @@ export default class Graph<t> {
           visit(current);
         }
       }
-    } else {
-      // yield undefined;
     }
-    // return results;
   }
 
   nodes: GraphNode<t>[] = [];
