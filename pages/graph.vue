@@ -4,9 +4,14 @@
     <button @click="dfs">depth first search</button>
     <button @click="bfs">breadth first search</button>
     <button @click="addNode">add a node</button>
+    <button @click="addNodes">add five nodes</button>
 
     <div>
-      <svg width="1000px" height="700px" viewBox="0 0 1000 700">
+      <svg
+        :width="`${graphWidth}px`"
+        :height="`${graphHeight}px`"
+        :viewBox="`0 0 ${graphWidth} ${graphHeight}`"
+      >
         <line
           v-for="link in d3Graph.links"
           :key="`${link.source.id}->${link.target.id}`"
@@ -44,22 +49,6 @@ import {
   SimulationLinkDatum,
 } from 'd3-force';
 
-// hmmm is this constructor making things more difficult than it needs to?
-// do I need to declare the links as part of the nodes themselves?
-// maybe nodes and links could be declared separately, and passed in and managed by the Graph
-const myNodes: INode<number>[] = [
-  { id: '1', value: 1 },
-  // { id: '2', value: 2 },
-  // { id: '3', value: 3 },
-];
-const myLinks: ILink[] = [
-  // { sourceId: '1', targetId: '2' },
-  // { sourceId: '2', targetId: '3' },
-  // { sourceId: '3', targetId: '1' },
-];
-
-const myGraph = new Graph<number>(myNodes, myLinks);
-
 interface D3Node {
   id: string;
 }
@@ -81,17 +70,49 @@ const toD3GraphShape = (graph: Graph<any>): D3GraphShape => {
   };
 };
 
+const generateNode = (): INode<number> => {
+  const newId = uuid();
+  const newValue = Math.floor(Math.random() * 100);
+  return {
+    id: newId,
+    value: newValue,
+  };
+};
+
+const generateLinkedNode = (
+  graph: Graph<number>
+): { node: INode<number>; link: ILink } => {
+  const newNode = generateNode();
+  const existingIds = graph.nodes.map((n) => n.id);
+  const randomId = sample(existingIds) || '';
+  const newLink = {
+    sourceId: randomId,
+    targetId: newNode.id,
+  };
+  return {
+    node: newNode,
+    link: newLink,
+  };
+};
+
+const myNodes: INode<number>[] = [{ id: '1', value: 1 }];
+const myLinks: ILink[] = [];
+
+const myGraph = new Graph<number>(myNodes, myLinks);
+
 export default Vue.extend({
   data() {
     return {
       graph: myGraph,
       visitedNodes: [] as number[],
+      graphWidth: 1000,
+      graphHeight: 700,
+      msBetweenVisits: 150,
+      currentRun: '',
     };
   },
   computed: {
     d3Graph() {
-      const width = 1000;
-      const height = 700;
       const result = toD3GraphShape(this.graph);
       const simulation = forceSimulation(result.nodes as SimulationNodeDatum[])
         .force(
@@ -102,47 +123,59 @@ export default Vue.extend({
             .strength(2)
         )
         .force('charge', forceManyBody().strength(-50))
-        .force('center', forceCenter(width / 2, height / 2).strength(1));
+        .force(
+          'center',
+          forceCenter(this.graphWidth / 2, this.graphHeight / 2).strength(1)
+        );
       simulation.stop();
       simulation.tick(100);
-      console.log(result);
       return result;
     },
   },
   methods: {
     addNode() {
-      const newId = uuid();
-      const existingIds = this.graph.nodes.map((n) => n.id);
-      const randomId = sample(existingIds);
-      const newLink = {
-        sourceId: randomId,
-        targetId: newId,
-      };
-      Vue.set(this.graph, 'nodes', [
-        ...this.graph.nodes,
-        { id: newId, value: 1 },
-      ]);
-      Vue.set(this.graph, 'links', [...this.graph.links, newLink]);
+      const newNode = generateLinkedNode(this.graph);
+      Vue.set(this.graph, 'nodes', [...this.graph.nodes, newNode.node]);
+      Vue.set(this.graph, 'links', [...this.graph.links, newNode.link]);
+    },
+    addNodes() {
+      for (let i = 0; i < 5; i += 1) {
+        this.addNode();
+      }
     },
     async dfs() {
-      const msBetweenVisits = 125;
+      const runId = uuid();
+      this.currentRun = runId;
       this.visitedNodes = [];
       const generator = this.graph.dfsGenerator('1', (node) => node.id);
       for (const nodeValue of generator) {
-        await new Promise((resolve) => setTimeout(resolve, msBetweenVisits));
-        if (nodeValue) {
-          this.visitedNodes = [...this.visitedNodes, nodeValue];
+        await new Promise((resolve) =>
+          setTimeout(resolve, this.msBetweenVisits)
+        );
+        if (this.currentRun === runId) {
+          if (nodeValue) {
+            this.visitedNodes = [...this.visitedNodes, nodeValue];
+          }
+        } else {
+          break;
         }
       }
     },
     async bfs() {
-      const msBetweenVisits = 125;
+      const runId = uuid();
+      this.currentRun = runId;
       this.visitedNodes = [];
       const generator = this.graph.bfsGenerator('1', (node) => node.id);
       for (const nodeValue of generator) {
-        await new Promise((resolve) => setTimeout(resolve, msBetweenVisits));
-        if (nodeValue) {
-          this.visitedNodes = [...this.visitedNodes, nodeValue];
+        await new Promise((resolve) =>
+          setTimeout(resolve, this.msBetweenVisits)
+        );
+        if (this.currentRun === runId) {
+          if (nodeValue) {
+            this.visitedNodes = [...this.visitedNodes, nodeValue];
+          }
+        } else {
+          break;
         }
       }
     },
@@ -152,6 +185,6 @@ export default Vue.extend({
 
 <style scoped>
 svg {
-  border: 1px solid red;
+  border: 1px solid #222;
 }
 </style>
