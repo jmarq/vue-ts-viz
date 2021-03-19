@@ -58,9 +58,12 @@ export default class Graph<t> implements IGraph<t> {
 
   *dfsGenerator(
     nodeId: string,
-    yieldFunc = (node: INode<t>) => node.value as any
+    yieldFunc = (node: INode<t>) => node.value as any,
+    directed: boolean = false
   ) {
-    // const results: t[] = [];
+    const neighborFunction = directed
+      ? this.targetsFor.bind(this)
+      : this.neighborsFor.bind(this);
     const startNode = this.getNodeById(nodeId);
     if (startNode) {
       const visitedIds: string[] = [startNode.id];
@@ -69,7 +72,7 @@ export default class Graph<t> implements IGraph<t> {
         const currentNode = toVisit.pop();
         if (currentNode) {
           yield yieldFunc(currentNode);
-          for (const neighbor of [...this.targetsFor(currentNode)].reverse()) {
+          for (const neighbor of [...neighborFunction(currentNode)].reverse()) {
             if (!visitedIds.includes(neighbor.id)) {
               toVisit.push(neighbor);
               visitedIds.push(neighbor.id);
@@ -82,16 +85,20 @@ export default class Graph<t> implements IGraph<t> {
 
   *bfsGenerator(
     nodeId: string,
-    yieldFunc = (node: INode<t>) => node.value as any
+    yieldFunc = (node: INode<t>) => node.value as any,
+    directed: boolean = false
   ) {
-    // const results: t[] = [];
+    const neighborFunction = directed
+      ? this.targetsFor.bind(this)
+      : this.neighborsFor.bind(this);
+
     const startNode = this.nodes.find((n) => n.id === nodeId);
     if (startNode) {
       const toVisit = [startNode];
       const visitedIds: string[] = [startNode.id];
       const visit = (visitingNode: INode<t>) => {
         // results.push(visitingNode.value);
-        for (const neighbor of this.targetsFor(visitingNode)) {
+        for (const neighbor of neighborFunction(visitingNode)) {
           if (!visitedIds.includes(neighbor.id)) {
             toVisit.unshift(neighbor);
             visitedIds.push(neighbor.id);

@@ -3,12 +3,14 @@
     <h1>graph traversal</h1>
     <button @click="dfs">depth first search</button>
     <button @click="bfs">breadth first search</button>
+    <button @click="addNode">add a node</button>
+
     <div>
-      <svg width="500px" height="500px" viewBox="0 0 500 500">
+      <svg width="1000px" height="700px" viewBox="0 0 1000 700">
         <line
           v-for="link in d3Graph.links"
           :key="`${link.source.id}->${link.target.id}`"
-          stroke="black"
+          stroke="#888"
           stroke-width="2"
           :x1="link.source.x"
           :y1="link.source.y"
@@ -18,10 +20,10 @@
         <circle
           v-for="node in d3Graph.nodes"
           :key="node.id"
-          r="5"
+          r="8"
           :cx="node.x"
           :cy="node.y"
-          :fill="visitedNodes.includes(node.id) ? 'red' : 'black'"
+          :fill="visitedNodes.includes(node.id) ? '#f20' : '#238'"
         ></circle>
       </svg>
     </div>
@@ -30,7 +32,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import Graph, { GraphNode } from '@/helpers/dataStructures/graph';
+import { v4 as uuid } from 'uuid';
+import Graph, { INode, ILink } from '@/helpers/dataStructures/graph2';
+import sample from 'lodash/sample';
 import {
   forceSimulation,
   forceLink,
@@ -43,20 +47,18 @@ import {
 // hmmm is this constructor making things more difficult than it needs to?
 // do I need to declare the links as part of the nodes themselves?
 // maybe nodes and links could be declared separately, and passed in and managed by the Graph
-const myNodes = [
-  new GraphNode<number>('1', 1, ['2', '4']),
-  // 1 --> 2 --> 1 cycle
-  new GraphNode<number>('2', 2, ['3', '8']),
-  new GraphNode<number>('3', 3, ['5']),
-  new GraphNode<number>('4', 4, ['8']),
-  new GraphNode<number>('5', 5, []),
-  new GraphNode<number>('6', 6, ['7', '9']),
-  new GraphNode<number>('7', 7, []),
-  new GraphNode<number>('8', 8, ['6']),
-  new GraphNode<number>('9', 9, []),
+const myNodes: INode<number>[] = [
+  { id: '1', value: 1 },
+  // { id: '2', value: 2 },
+  // { id: '3', value: 3 },
+];
+const myLinks: ILink[] = [
+  // { sourceId: '1', targetId: '2' },
+  // { sourceId: '2', targetId: '3' },
+  // { sourceId: '3', targetId: '1' },
 ];
 
-const myGraph = new Graph<number>(myNodes);
+const myGraph = new Graph<number>(myNodes, myLinks);
 
 interface D3Node {
   id: string;
@@ -71,22 +73,11 @@ interface D3GraphShape {
 }
 
 const toD3GraphShape = (graph: Graph<any>): D3GraphShape => {
-  const nodes = graph.nodes.map((node) => ({
-    id: node.id,
-    value: node.value,
-  }));
-  const links = [];
-  for (const node of graph.nodes) {
-    for (const neighborId of node.neighborIds) {
-      links.push({
-        source: node.id,
-        target: neighborId,
-      });
-    }
-  }
   return {
-    nodes,
-    links,
+    nodes: graph.nodes.map((n) => ({
+      id: n.id,
+    })),
+    links: graph.links.map((l) => ({ source: l.sourceId, target: l.targetId })),
   };
 };
 
@@ -99,25 +90,40 @@ export default Vue.extend({
   },
   computed: {
     d3Graph() {
-      const width = 500;
-      const height = 500;
+      const width = 1000;
+      const height = 700;
       const result = toD3GraphShape(this.graph);
       const simulation = forceSimulation(result.nodes as SimulationNodeDatum[])
         .force(
           'link',
-          forceLink(
-            result.links as SimulationLinkDatum<SimulationNodeDatum>[]
-          ).id((d) => d.id)
+          forceLink(result.links as SimulationLinkDatum<SimulationNodeDatum>[])
+            .id((d) => d.id)
+            .distance(35)
+            .strength(2)
         )
-        .force('charge', forceManyBody())
-        .force('center', forceCenter(width / 2, height / 2));
+        .force('charge', forceManyBody().strength(-50))
+        .force('center', forceCenter(width / 2, height / 2).strength(1));
       simulation.stop();
-      simulation.tick(500);
+      simulation.tick(100);
       console.log(result);
       return result;
     },
   },
   methods: {
+    addNode() {
+      const newId = uuid();
+      const existingIds = this.graph.nodes.map((n) => n.id);
+      const randomId = sample(existingIds);
+      const newLink = {
+        sourceId: randomId,
+        targetId: newId,
+      };
+      Vue.set(this.graph, 'nodes', [
+        ...this.graph.nodes,
+        { id: newId, value: 1 },
+      ]);
+      Vue.set(this.graph, 'links', [...this.graph.links, newLink]);
+    },
     async dfs() {
       const msBetweenVisits = 125;
       this.visitedNodes = [];
