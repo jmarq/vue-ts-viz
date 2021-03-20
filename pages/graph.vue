@@ -16,7 +16,7 @@
         <line
           v-for="link in d3Graph.links"
           :key="`${link.source.id}->${link.target.id}`"
-          stroke="#888"
+          :stroke="bfsVisitedNodes.includes(link.source.id) ? '#822' : '#aaa'"
           stroke-width="2"
           :x1="link.source.x"
           :y1="link.source.y"
@@ -40,7 +40,7 @@
         <line
           v-for="link in d3Graph.links"
           :key="`${link.source.id}->${link.target.id}`"
-          stroke="#888"
+          :stroke="dfsVisitedNodes.includes(link.source.id) ? '#822' : '#aaa'"
           stroke-width="2"
           :x1="link.source.x"
           :y1="link.source.y"
@@ -219,5 +219,13 @@ export default Vue.extend({
 <style scoped>
 svg {
   border: 1px solid #222;
+}
+
+circle {
+  transition: 300ms linear fill;
+}
+
+line {
+  transition: 300ms linear;
 }
 </style>
