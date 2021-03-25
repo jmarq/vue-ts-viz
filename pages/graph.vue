@@ -70,6 +70,8 @@ import {
   forceLink,
   forceManyBody,
   forceCenter,
+  forceX,
+  forceY,
   SimulationNodeDatum,
   SimulationLinkDatum,
 } from 'd3-force';
@@ -143,6 +145,8 @@ export default Vue.extend({
   computed: {
     d3Graph() {
       const result = toD3GraphShape(this.graph);
+      const gravityX = forceX(this.graphWidth / 2).strength(0.035);
+      const gravityY = forceY(this.graphHeight / 2).strength(0.035);
       const simulation = forceSimulation(result.nodes as SimulationNodeDatum[])
         .force(
           'link',
@@ -154,8 +158,10 @@ export default Vue.extend({
         .force('charge', forceManyBody().strength(-50))
         .force(
           'center',
-          forceCenter(this.graphWidth / 2, this.graphHeight / 2).strength(1)
-        );
+          forceCenter(this.graphWidth / 2, this.graphHeight / 2).strength(1.015)
+        )
+        .force('gravityX', gravityX)
+        .force('gravityY', gravityY);
       simulation.stop();
       simulation.tick(100);
       return result;
