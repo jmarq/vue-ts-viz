@@ -1,100 +1,78 @@
-export class GraphNode<t> {
-  constructor(id: string, val: t, neighborIds: string[] = []) {
-    this.value = val;
-    this.id = id;
-    this.neighborIds = neighborIds;
-  }
+// what is the goal for this data structure?
+// to represent nodes/links
+// to eventually visualize
+// will the nodes/links be modified after the fact?
+// removing links, adding new nodes, etc.
+// what might the interface look like?
 
+// should this be a directed graph? should this support '2 way links' declared as a single link?
+// or maybe "neighbors" that is source/target direction agnostic
+
+export interface INode<t> {
   id: string;
   value: t;
-  neighborIds: string[];
-  neighbors: GraphNode<t>[] = [];
 }
 
-export default class Graph<t> {
-  constructor(nodes: GraphNode<t>[]) {
+export interface ILink {
+  sourceId: string;
+  targetId: string;
+}
+
+export interface IGraph<t> {
+  nodes: INode<t>[];
+  links: ILink[];
+}
+
+export default class Graph<t> implements IGraph<t> {
+  constructor(nodes: INode<t>[] = [], links: ILink[] = []) {
     this.nodes = nodes;
-    for (const node of this.nodes) {
-      this.assignNeighborNodes(node);
-    }
+    this.links = links;
   }
 
-  assignNeighborNodes(node: GraphNode<t>) {
-    node.neighbors = [];
-    for (const neighborId of node.neighborIds) {
-      const matchingNode: GraphNode<t> | undefined = this.nodes.find(
-        (n) => n.id === neighborId
-      );
-      if (matchingNode) {
-        node.neighbors.push(matchingNode);
-      }
-    }
+  getNodeById(id: string): INode<t> | undefined {
+    return this.nodes.find((n) => n.id === id);
   }
 
-  get nodeIds(): string[] {
-    return this.nodes.map((n) => n.id);
+  targetsFor(node: INode<t>): INode<t>[] {
+    const linksForNode = this.links.filter((l) => l.sourceId === node.id);
+    const targetNodes = linksForNode
+      .map((l) => this.getNodeById(l.targetId))
+      .filter((n) => typeof n !== 'undefined') as INode<t>[];
+    return targetNodes;
   }
 
-  get adjacencyList(): object {
-    const result: { [index: string]: string[] } = {};
-    for (const node of this.nodes) {
-      result[node.id] = node.neighborIds;
-    }
-    return result;
+  sourcesFor(node: INode<t>): INode<t>[] {
+    const linksForNode = this.links.filter((l) => l.targetId === node.id);
+    const sourceNodes = linksForNode
+      .map((l) => this.getNodeById(l.sourceId))
+      .filter((n) => typeof n !== 'undefined') as INode<t>[];
+    return sourceNodes;
   }
 
-  dfs(nodeId: string, visitedIds: string[] = []): t[] {
-    let results: t[] = [];
-    const startNode = this.nodes.find((n) => n.id === nodeId);
-    if (startNode) {
-      visitedIds.push(startNode.id);
-      results.push(startNode.value);
-      for (const neighborId of startNode.neighborIds) {
-        if (!visitedIds.includes(neighborId)) {
-          results = [...results, ...this.dfs(neighborId, visitedIds)];
-        }
-      }
-    }
-    return results;
-  }
-
-  dfsStack(nodeId: string): t[] {
-    const results: t[] = [];
-    const startNode = this.nodes.find((n) => n.id === nodeId);
-    if (startNode) {
-      const visitedIds: string[] = [startNode.id];
-      const toVisit = [startNode];
-      while (toVisit.length > 0) {
-        const currentNode = toVisit.pop();
-        if (currentNode) {
-          results.push(currentNode.value);
-          for (const neighbor of currentNode.neighbors.reverse()) {
-            if (!visitedIds.includes(neighbor.id)) {
-              toVisit.push(neighbor);
-              visitedIds.push(neighbor.id);
-            }
-          }
-        }
-      }
-    }
-    return results;
+  neighborsFor(node: INode<t>): Set<INode<t>> {
+    const sourcesFor = this.sourcesFor(node);
+    const targetsFor = this.targetsFor(node);
+    const neighbors = new Set(sourcesFor.concat(targetsFor));
+    return neighbors;
   }
 
   *dfsGenerator(
     nodeId: string,
-    yieldFunc = (node: GraphNode<t>) => node.value as any
+    yieldFunc = (node: INode<t>) => node.value as any,
+    directed: boolean = false
   ) {
-    // const results: t[] = [];
-    const startNode = this.nodes.find((n) => n.id === nodeId);
+    const neighborFunction = directed
+      ? this.targetsFor.bind(this)
+      : this.neighborsFor.bind(this);
+    const startNode = this.getNodeById(nodeId);
     if (startNode) {
       const visitedIds: string[] = [startNode.id];
       const toVisit = [startNode];
       while (toVisit.length > 0) {
         const currentNode = toVisit.pop();
         if (currentNode) {
-          // results.push(currentNode.value);
           yield yieldFunc(currentNode);
-          for (const neighbor of [...currentNode.neighbors].reverse()) {
+          for (const neighbor of [...neighborFunction(currentNode)].reverse()) {
             if (!visitedIds.includes(neighbor.id)) {
               toVisit.push(neighbor);
               visitedIds.push(neighbor.id);
@@ -105,43 +83,22 @@ export default class Graph<t> {
     }
   }
 
-  bfs(nodeId: string): t[] {
-    const results: t[] = [];
-    const startNode = this.nodes.find((n) => n.id === nodeId);
-    if (startNode) {
-      const toVisit = [startNode];
-      const visitedIds: string[] = [startNode.id];
-      const visit = (visitingNode: GraphNode<t>) => {
-        results.push(visitingNode.value);
-        for (const neighbor of visitingNode.neighbors) {
-          if (!visitedIds.includes(neighbor.id)) {
-            toVisit.unshift(neighbor);
-            visitedIds.push(neighbor.id);
-          }
-        }
-      };
-      while (toVisit.length > 0) {
-        const current = toVisit.pop();
-        if (current) {
-          visit(current);
-        }
-      }
-    }
-    return results;
-  }
-
   *bfsGenerator(
     nodeId: string,
-    yieldFunc = (node: GraphNode<t>) => node.value as any
+    yieldFunc = (node: INode<t>) => node.value as any,
+    directed: boolean = false
   ) {
-    // const results: t[] = [];
+    const neighborFunction = directed
+      ? this.targetsFor.bind(this)
+      : this.neighborsFor.bind(this);
+
     const startNode = this.nodes.find((n) => n.id === nodeId);
     if (startNode) {
       const toVisit = [startNode];
       const visitedIds: string[] = [startNode.id];
-      const visit = (visitingNode: GraphNode<t>) => {
+      const visit = (visitingNode: INode<t>) => {
         // results.push(visitingNode.value);
-        for (const neighbor of visitingNode.neighbors) {
+        for (const neighbor of neighborFunction(visitingNode)) {
           if (!visitedIds.includes(neighbor.id)) {
             toVisit.unshift(neighbor);
             visitedIds.push(neighbor.id);
@@ -158,5 +115,6 @@ export default class Graph<t> {
     }
   }
 
-  nodes: GraphNode<t>[] = [];
+  nodes: INode<t>[] = [];
+  links: ILink[] = [];
 }

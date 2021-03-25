@@ -63,7 +63,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { v4 as uuid } from 'uuid';
-import Graph, { INode, ILink } from '@/helpers/dataStructures/graph2';
+import Graph, { INode, ILink } from '@/helpers/dataStructures/graph';
 import sample from 'lodash/sample';
 import {
   forceSimulation,
