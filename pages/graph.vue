@@ -1,61 +1,69 @@
 <template>
   <div class="page-wrapper">
     <h1>graph traversal</h1>
-    <button @click="dfs">depth first search</button>
-    <button @click="bfs">breadth first search</button>
-    <button @click="bothSearches">both searches</button>
-    <button @click="addNode">add a node</button>
-    <button @click="addNodes">add five nodes</button>
-
-    <div>
-      <svg
-        :width="`${graphWidth / 1.5}px`"
-        :height="`${graphHeight / 1.5}px`"
-        :viewBox="`0 0 ${graphWidth} ${graphHeight}`"
-      >
-        <line
-          v-for="link in d3Graph.links"
-          :key="`${link.source.id}->${link.target.id}`"
-          :stroke="bfsVisitedNodes.includes(link.source.id) ? '#822' : '#aaa'"
-          stroke-width="2"
-          :x1="link.source.x"
-          :y1="link.source.y"
-          :x2="link.target.x"
-          :y2="link.target.y"
-        ></line>
-        <circle
-          v-for="node in d3Graph.nodes"
-          :key="node.id"
-          r="8"
-          :cx="node.x"
-          :cy="node.y"
-          :fill="bfsVisitedNodes.includes(node.id) ? '#f20' : '#238'"
-        ></circle>
-      </svg>
-      <svg
-        :width="`${graphWidth / 1.5}px`"
-        :height="`${graphHeight / 1.5}px`"
-        :viewBox="`0 0 ${graphWidth} ${graphHeight}`"
-      >
-        <line
-          v-for="link in d3Graph.links"
-          :key="`${link.source.id}->${link.target.id}`"
-          :stroke="dfsVisitedNodes.includes(link.source.id) ? '#822' : '#aaa'"
-          stroke-width="2"
-          :x1="link.source.x"
-          :y1="link.source.y"
-          :x2="link.target.x"
-          :y2="link.target.y"
-        ></line>
-        <circle
-          v-for="node in d3Graph.nodes"
-          :key="node.id"
-          r="8"
-          :cx="node.x"
-          :cy="node.y"
-          :fill="dfsVisitedNodes.includes(node.id) ? '#f20' : '#238'"
-        ></circle>
-      </svg>
+    <div class="controls">
+      <button @click="bfs">breadth first search</button>
+      <button @click="dfs">depth first search</button>
+      <button @click="bothSearches">both searches</button>
+      <button @click="addNode">add a node</button>
+      <button @click="addNodes">add five nodes</button>
+    </div>
+    <hr />
+    <div class="graphs">
+      <div class="graph">
+        <h2>breadth first search</h2>
+        <svg
+          :width="`${graphWidth / 1.5}px`"
+          :height="`${graphHeight / 1.5}px`"
+          :viewBox="`0 0 ${graphWidth} ${graphHeight}`"
+        >
+          <line
+            v-for="link in d3Graph.links"
+            :key="`${link.source.id}->${link.target.id}`"
+            :stroke="bfsVisitedNodes.includes(link.source.id) ? '#822' : '#aaa'"
+            stroke-width="2"
+            :x1="link.source.x"
+            :y1="link.source.y"
+            :x2="link.target.x"
+            :y2="link.target.y"
+          ></line>
+          <circle
+            v-for="node in d3Graph.nodes"
+            :key="node.id"
+            r="8"
+            :cx="node.x"
+            :cy="node.y"
+            :fill="bfsVisitedNodes.includes(node.id) ? '#f20' : '#238'"
+          ></circle>
+        </svg>
+      </div>
+      <div class="graph">
+        <h2>depth first search</h2>
+        <svg
+          :width="`${graphWidth / 1.5}px`"
+          :height="`${graphHeight / 1.5}px`"
+          :viewBox="`0 0 ${graphWidth} ${graphHeight}`"
+        >
+          <line
+            v-for="link in d3Graph.links"
+            :key="`${link.source.id}->${link.target.id}`"
+            :stroke="dfsVisitedNodes.includes(link.source.id) ? '#822' : '#aaa'"
+            stroke-width="2"
+            :x1="link.source.x"
+            :y1="link.source.y"
+            :x2="link.target.x"
+            :y2="link.target.y"
+          ></line>
+          <circle
+            v-for="node in d3Graph.nodes"
+            :key="node.id"
+            r="8"
+            :cx="node.x"
+            :cy="node.y"
+            :fill="dfsVisitedNodes.includes(node.id) ? '#f20' : '#238'"
+          ></circle>
+        </svg>
+      </div>
     </div>
   </div>
 </template>
@@ -223,6 +231,25 @@ export default Vue.extend({
 </script>
 
 <style scoped>
+.controls {
+  padding: 0.25rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.controls button {
+  display: inline-block;
+  margin: 0.5rem;
+  padding: 0.25rem;
+}
+.graphs {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  padding-top: 0.5em;
+}
 svg {
   border: 1px solid #222;
 }
