@@ -109,7 +109,7 @@ export default Vue.extend({
     };
   },
   computed: {
-    comparingWith() {
+    comparingWith(): number {
       return this.current + 1;
     },
   },

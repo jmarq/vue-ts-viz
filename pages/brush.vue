@@ -48,10 +48,10 @@ export default Vue.extend({
   },
 
   computed: {
-    brushStrings() {
+    brushStrings(): string[] {
       return this.currentBrush.map((num) => Number(num).toFixed(2));
     },
-    visibleDots() {
+    visibleDots(): number[] {
       return this.dots.filter(
         (d) => d >= this.currentBrush[0] && d <= this.currentBrush[1]
       );
