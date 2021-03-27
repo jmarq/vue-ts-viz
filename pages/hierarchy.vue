@@ -151,7 +151,7 @@ const sunburstArcGenerator = arc<ColoredPartitionNode>()
   .outerRadius((d) => d.y1 * 0.5 * chartSpaceHeight);
 
 const colors = schemeDark2;
-
+// https://github.com/vuejs/vue/issues/8406#issuecomment-591297609
 export default {
   data() {
     return {
@@ -179,11 +179,11 @@ export default {
             children: [],
           },
         ],
-      },
+      } as HierarchicalNode,
     };
   },
   computed: {
-    hierarchy() {
+    hierarchy(): ColoredHierarchyNode {
       console.log('computing hierarchy');
       const hierarchyRoot: ColoredHierarchyNode = d3Hierarchy<HierarchicalNode>(
         this.hierarchyData as HierarchicalNode
@@ -197,21 +197,21 @@ export default {
       console.log(hierarchyRoot.descendants());
       return hierarchyRoot;
     },
-    partitionRoot() {
+    partitionRoot(): ColoredPartitionNode {
       console.log('computing partition');
       const partitionRoot: ColoredPartitionNode = d3Partition<HierarchicalNode>().size(
         [1, 1]
       )(this.hierarchy);
       return partitionRoot;
     },
-    packRoot() {
+    packRoot(): ColoredCircularNode {
       console.log('computing packed layout');
       const packer = d3Pack<HierarchicalNode>().size([1000, 1000]).padding(3);
       const packed: ColoredCircularNode = packer(this.hierarchy);
       console.log({ packed });
       return packed;
     },
-    treemapRoot() {
+    treemapRoot(): ColoredPartitionNode {
       console.log('computing treemap layout');
       const mapper = d3Treemap<HierarchicalNode>().size([1000, 1000]);
       const mapped: ColoredPartitionNode = mapper(this.hierarchy);
@@ -220,7 +220,9 @@ export default {
     },
   },
   methods: {
-    sunburstArcGenerator,
+    sunburstArcGenerator(node: ColoredPartitionNode): string | null {
+      return sunburstArcGenerator(node);
+    },
     nodeColor(node: ColoredHierarchyNode): string {
       if (node.color) {
         return node.color;
@@ -235,20 +237,20 @@ export default {
         return 'black';
       }
     },
-    increaseNode(node: ColoredPartitionNode | ColoredHierarchyNode) {
+    increaseNode(node: ColoredPartitionNode | ColoredHierarchyNode): void {
       node.data.value += 1;
     },
-    selectNode(node: ColoredPartitionNode | ColoredHierarchyNode) {
+    selectNode(node: ColoredPartitionNode | ColoredHierarchyNode): void {
       this.selectedNode = node;
     },
-    randomIncrease() {
+    randomIncrease(): void {
       const nodes: ColoredHierarchyNode[] = [...this.hierarchy.descendants()];
       const shuffled = d3Shuffle(nodes);
       const nodeToIncrease = shuffled[0];
       nodeToIncrease.data.value += Math.random() * 5;
       this.selectedNode = nodeToIncrease;
     },
-    randomNewChild() {
+    randomNewChild(): void {
       const nodes: ColoredHierarchyNode[] = [...this.hierarchy.descendants()];
       const shuffled = d3Shuffle(nodes);
       const nodeToAddChildTo = shuffled[0].data;
@@ -264,7 +266,7 @@ export default {
       }
       this.selectedNode = shuffled[0];
     },
-    randomChange() {
+    randomChange(): void {
       if (Math.random() >= 0.5) {
         this.randomIncrease();
       } else {
