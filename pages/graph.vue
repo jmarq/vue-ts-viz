@@ -84,8 +84,8 @@ import {
   SimulationLinkDatum,
 } from 'd3-force';
 
-interface D3Node {
-  id: string;
+interface D3Node extends Partial<SimulationNodeDatum> {
+  id?: string;
 }
 interface D3Link {
   source: string;
@@ -158,8 +158,8 @@ export default Vue.extend({
       const simulation = forceSimulation(result.nodes as SimulationNodeDatum[])
         .force(
           'link',
-          forceLink(result.links as SimulationLinkDatum<SimulationNodeDatum>[])
-            .id((d) => d.id)
+          forceLink(result.links as SimulationLinkDatum<D3Node>[])
+            .id((d: D3Node) => d.id || 'soon')
             .distance(35)
             .strength(2)
         )

@@ -218,7 +218,7 @@ export default {
       console.log({ mapped });
       return mapped;
     },
-  },
+  } as any,
   methods: {
     sunburstArcGenerator(node: ColoredPartitionNode): string | null {
       return sunburstArcGenerator(node);
@@ -273,8 +273,8 @@ export default {
         this.randomNewChild();
       }
     },
-  },
-};
+  } as any,
+} as any;
 </script>
 
 <style scoped>
