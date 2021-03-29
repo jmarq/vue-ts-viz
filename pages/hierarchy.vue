@@ -152,7 +152,7 @@ const sunburstArcGenerator = arc<ColoredPartitionNode>()
 
 const colors = schemeDark2;
 // https://github.com/vuejs/vue/issues/8406#issuecomment-591297609
-export default {
+export default Vue.extend({
   data() {
     return {
       selectedNode: undefined as
@@ -218,7 +218,7 @@ export default {
       console.log({ mapped });
       return mapped;
     },
-  } as any,
+  },
   methods: {
     sunburstArcGenerator(node: ColoredPartitionNode): string | null {
       return sunburstArcGenerator(node);
@@ -273,8 +273,8 @@ export default {
         this.randomNewChild();
       }
     },
-  } as any,
-} as any;
+  },
+});
 </script>
 
 <style scoped>
