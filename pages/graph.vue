@@ -144,7 +144,7 @@ export default Vue.extend({
       dfsVisitedNodes: [] as number[],
       graphWidth: 1000,
       graphHeight: 700,
-      msBetweenVisits: 150,
+      msBetweenVisits: 175,
       currentRun: '',
       currentBfsRun: '',
       currentDfsRun: '',
